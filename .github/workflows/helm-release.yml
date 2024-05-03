@@ -18,6 +18,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      # The Helm job fails with *.tgz included in the .gitignore file because it packages the chart in .tgz format
+      # This job allows us to comment that line out without changing the file 
+      - name: Comment out *.tgz in .gitignore
+        run: |
+          sed -i '/\*.tgz/s/^/#/' .gitignore
+
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
@@ -33,6 +39,6 @@ jobs:
         with:
           skip_existing: true
           packages_with_index: true
-          charts_dir: kubernetes/
+          charts_dir: kubernetes/helm
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
